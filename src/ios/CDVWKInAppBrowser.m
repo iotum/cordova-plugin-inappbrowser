@@ -673,10 +673,10 @@ BOOL isExiting = FALSE;
     
     NSString *userAgent = configuration.applicationNameForUserAgent;
     if (
-        [self settingForKey:@"OverrideUserAgent"] == nil &&
-        [self settingForKey:@"AppendUserAgent"] != nil
+        [self settingForKey:@"IAPOverrideUserAgent"] == nil &&
+        [self settingForKey:@"IAPAppendUserAgent"] != nil
         ) {
-        userAgent = [NSString stringWithFormat:@"%@ %@", userAgent, [self settingForKey:@"AppendUserAgent"]];
+        userAgent = [NSString stringWithFormat:@"%@ %@", userAgent, [self settingForKey:@"IAPAppendUserAgent"]];
     }
     configuration.applicationNameForUserAgent = userAgent;
     configuration.userContentController = userContentController;
@@ -731,8 +731,8 @@ BOOL isExiting = FALSE;
     self.webView.navigationDelegate = self;
     self.webView.UIDelegate = self.webViewUIDelegate;
     self.webView.backgroundColor = [UIColor whiteColor];
-    if ([self settingForKey:@"OverrideUserAgent"] != nil) {
-        self.webView.customUserAgent = [self settingForKey:@"OverrideUserAgent"];
+    if ([self settingForKey:@"IAPOverrideUserAgent"] != nil) {
+        self.webView.customUserAgent = [self settingForKey:@"IAPOverrideUserAgent"];
     }
     
     self.webView.clearsContextBeforeDrawing = YES;
