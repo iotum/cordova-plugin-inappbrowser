@@ -79,14 +79,23 @@
 
     [[self getViewController] presentViewController:alert animated:YES completion:nil];
 }
-//open popup window within same frame. 
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
-  if (!navigationAction.targetFrame.isMainFrame) {
-    [webView loadRequest:navigationAction.request];
-  }
+    // Create a new WKWebView with the given configuration
+    WKWebView *popupWebView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
+    popupWebView.UIDelegate = self;
+    popupWebView.navigationDelegate = self;
 
-  return nil;
+    // Optionally, present the new web view in a new view controller
+    UIViewController *popupVC = [[UIViewController alloc] init];
+    popupWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [popupVC.view addSubview:popupWebView];
+    popupWebView.frame = popupVC.view.bounds;
+
+    // Present modally (or push onto navigation stack)
+    [self presentViewController:popupVC animated:YES completion:nil];
+
+    return popupWebView;
 }
 
 - (void)      webView:(WKWebView*)webView runJavaScriptTextInputPanelWithPrompt:(NSString*)prompt
