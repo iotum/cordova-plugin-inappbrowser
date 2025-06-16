@@ -81,21 +81,18 @@
 }
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
 {
-    // Create a new WKWebView with the given configuration
-    WKWebView *popupWebView = [[WKWebView alloc] initWithFrame:self.view.bounds configuration:configuration];
-    popupWebView.UIDelegate = self;
-    popupWebView.navigationDelegate = self;
-
-    // Optionally, present the new web view in a new view controller
-    UIViewController *popupVC = [[UIViewController alloc] init];
-    popupWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [popupVC.view addSubview:popupWebView];
-    popupWebView.frame = popupVC.view.bounds;
-
-    // Present modally (or push onto navigation stack)
-    [self presentViewController:popupVC animated:YES completion:nil];
-
-    return popupWebView;
+    // Handle links with target="_blank"
+    if (navigationAction.targetFrame == nil) {
+        // Create a new ViewController with a WKWebView
+        ViewController *newVC = [[ViewController alloc] init];
+        // Optionally, pass configuration or URL to newVC
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.navigationController pushViewController:newVC animated:YES];
+        });
+        // Return the new WKWebView so the request loads in it
+        return newVC.webView;
+    }
+    return nil;
 }
 
 - (void)      webView:(WKWebView*)webView runJavaScriptTextInputPanelWithPrompt:(NSString*)prompt
